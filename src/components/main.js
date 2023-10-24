@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../logo.svg";
 import "../App.css";
 import element1 from "../element1.svg";
@@ -6,10 +6,13 @@ import element2 from "../element2.svg";
 import drops from "../drops.svg"
 import searchicon from "../search.svg"
 import { useState } from "react";
-
+import Nice from "../nice.svg"
+import Nice2 from "../nice2.svg"
+import video from "../video (2160p).mp4"
 export default function Main() {
   const api_key="f14087b0d3f745c6ba2225616231009";
   const [temp,settemp]=useState(0);
+  const [temp2,settemp2]=useState(0);
   const [humidity,sethumid]=useState(0);
   const [name,setname]=useState("New York");
   const [state,setstate]=useState("England");
@@ -21,15 +24,24 @@ export default function Main() {
   const [Wind,setwind]=useState(0);
   const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const d = new Date();
+  const [sec,setsec]=useState(d.getSeconds());
   
 const month=d.toLocaleString('en-US', { month: 'short' });
 let today = weekday[d.getDay()];
+React.useEffect(()=>{
+  setInterval(() => {
+    setsec(prev=>prev<59?prev+1:0);
+  }, 1000);
+
+},[])
   async function search(){
     const val=document.getElementById("location_search").value;
+
     if(val==="")return 0;
  var url=`http://api.weatherapi.com/v1/current.json?key=f14087b0d3f745c6ba2225616231009&q=${val}&aqi=no`;
   let responce =await fetch(url);
   let data=await responce.json();
+ 
   settemp(Math.floor(data.current.temp_c));
   sethumid(data.current.humidity);
   setname(data.location.name);
@@ -40,11 +52,13 @@ let today = weekday[d.getDay()];
   setwind(data.current.wind_kph);
   setpreci(data.current.precip_mm);
   setpressure(data.current.pressure_mb);
+
   
 }
     return (
       
       <div className=" mainn flex align-middle justify-center items-center  h-screen w-screen">
+       
         <div className="main1 relative  flex align-middle justify-center items-center ">
           
           <div className="main">
@@ -99,6 +113,7 @@ let today = weekday[d.getDay()];
   <p className="">precipitation</p>
   <hr className="line"/>
   
+       
 </div>
 
 </div>
@@ -109,8 +124,14 @@ let today = weekday[d.getDay()];
           
           <button className="absolute button transition ease-linear hover:scale-1 " onClick={search}><img className="-ml-3 onClick={search}" src={searchicon}/></button>
           </div>
+           <h1 className="absolute time">{(d.getHours () + 24) % 12 || 12} : {d.getMinutes()} : <span className="seconds">{sec}</span></h1>
           </div>
-        
+          <div>
+            <img  className="absolute nice1" src={Nice}/>
+          </div>
+          <div>
+            <img  className="absolute nice2" src={Nice2}/>
+          </div>
       </div>
     );
   }
