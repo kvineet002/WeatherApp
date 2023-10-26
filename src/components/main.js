@@ -25,6 +25,7 @@ export default function Main() {
   const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const d = new Date();
   const [sec,setsec]=useState(d.getSeconds());
+  const [place,setplace]=useState('');
   
 const month=d.toLocaleString('en-US', { month: 'short' });
 let today = weekday[d.getDay()];
@@ -35,14 +36,10 @@ React.useEffect(()=>{
 
 },[])
   async function search(){
-    const val=document.getElementById("location_search").value;
-
-    if(val==="")return 0;
- var url=`http://api.weatherapi.com/v1/current.json?key=f14087b0d3f745c6ba2225616231009&q=${val}&aqi=no`;
+ var url=`http://api.weatherapi.com/v1/current.json?key=${api_key}&q=${place}&apqi=no`;
   let responce =await fetch(url);
   let data=await responce.json();
- 
-  settemp(Math.floor(data.current.temp_c));
+  if(data){settemp(Math.floor(data.current.temp_c));
   sethumid(data.current.humidity);
   setname(data.location.name);
   setday(data.current.is_day);
@@ -51,9 +48,9 @@ React.useEffect(()=>{
   setuv(data.current.uv);
   setwind(data.current.wind_kph);
   setpreci(data.current.precip_mm);
-  setpressure(data.current.pressure_mb);
+  setpressure(data.current.pressure_mb);}
 
-  
+
 }
     return (
       
@@ -120,7 +117,7 @@ React.useEffect(()=>{
           </div>
         <div className="absolute ">
           
-            <input id="location_search" className="absolute  search " placeholder="Search Location"></input>
+            <input onChange={(e)=>setplace(e.target.value)} className="absolute  search " placeholder="Search Location"></input>
           
           <button className="absolute button transition ease-linear hover:scale-1 " onClick={search}><img className="-ml-3 onClick={search}" src={searchicon}/></button>
           </div>
